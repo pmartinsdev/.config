@@ -14,19 +14,22 @@ return {
 				"scss",
 				"sql",
 				"yaml",
-				"prisma",
 				"angular",
 				"lua",
 				"html",
 				"tsx",
 				"javascript",
+				"typescript", -- Added TypeScript
+				"json", -- Added JSON
+				"bash", -- Added Bash
+				"markdown", -- Added Markdown
+				"markdown_inline", -- Inline Markdown
 			},
 
-			-- matchup = {
-			-- 	enable = true,
-			-- },
+			matchup = {
+				enable = true, -- Enable Matchup
+			},
 
-			-- https://github.com/nvim-treesitter/playground#query-linter
 			query_linter = {
 				enable = true,
 				use_virtual_text = true,
@@ -50,6 +53,17 @@ return {
 					goto_node = "<cr>",
 					show_help = "?",
 				},
+			},
+
+			highlight = {
+				enable = true,
+				disable = function(_, buf)
+					local max_filesize = 100 * 1024 -- 100 KB
+					local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+					if ok and stats and stats.size > max_filesize then
+						return true
+					end
+				end,
 			},
 		},
 		config = function(_, opts)

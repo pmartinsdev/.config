@@ -9,13 +9,5 @@ keymap.set("n", "te", ":tabedit ", opts)
 keymap.set("n", "<tab>", ":tabnext<Return>", opts)
 keymap.set("n", "<s-tab>", ":tabprev<Return>", opts)
 
--- Diagnostics
-keymap.set("n", "<C-j>", function()
-  vim.diagnostic.goto_next()
-end)
-keymap.set("n", "<C-k>", function()
-  vim.diagnostic.goto_prev()
-end)
-
 -- Clipboard
 vim.opt.clipboard = "unnamedplus"

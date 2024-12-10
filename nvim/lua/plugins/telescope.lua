@@ -90,6 +90,22 @@ return {
 			end,
 			desc = "Open File Browser with the path of the current buffer",
 		},
+		{
+			";t",
+			function()
+				require("telescope.builtin").buffers({
+					prompt_title = "Open Terminals",
+					only_cwd = true,
+					ignore_current_buffer = true,
+					sort_mru = true,
+					filter = function(bufnr)
+						local bufname = vim.api.nvim_buf_get_name(bufnr)
+						return vim.bo[bufnr].buftype == "terminal" and bufname ~= ""
+					end,
+				})
+			end,
+			desc = "List Open Terminals",
+		},
 	},
 	config = function(_, opts)
 		local telescope = require("telescope")
@@ -126,18 +142,6 @@ return {
 						["/"] = function()
 							vim.cmd("startinsert")
 						end,
-						["<C-u>"] = function(prompt_bufnr)
-							for i = 1, 10 do
-								actions.move_selection_previous(prompt_bufnr)
-							end
-						end,
-						["<C-d>"] = function(prompt_bufnr)
-							for i = 1, 10 do
-								actions.move_selection_next(prompt_bufnr)
-							end
-						end,
-						["<PageUp>"] = actions.preview_scrolling_up,
-						["<PageDown>"] = actions.preview_scrolling_down,
 					},
 				},
 			},
@@ -147,7 +151,6 @@ return {
 		telescope.setup(opts)
 	end,
 
-	-- Load extensions outside config to ensure telescope is ready
 	init = function()
 		local telescope = require("telescope")
 		telescope.load_extension("fzf")
