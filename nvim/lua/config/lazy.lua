@@ -36,3 +36,12 @@ require("lazy").setup({
 		},
 	},
 })
+
+-- Working arround to setup dashboard on vim enter
+vim.api.nvim_create_autocmd("VimEnter", {
+	callback = function()
+		if vim.fn.argc() == 0 then
+			vim.cmd("Dashboard")
+		end
+	end,
+})

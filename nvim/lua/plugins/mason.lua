@@ -5,6 +5,10 @@ return {
 	build = ":MasonUpdate",
 	opts = {
 		ensure_installed = {
+			"css-lsp",
+			"shellcheck",
+			"luacheck",
+			"selene",
 			"angular-language-server",
 			"lua-language-server",
 			"prisma-language-server",
