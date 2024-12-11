@@ -33,8 +33,8 @@ return {
 				vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
 				vim.keymap.set("n", "<C-k>", vim.diagnostic.goto_prev, opts)
 				vim.keymap.set("n", "<C-j>", vim.diagnostic.goto_next, opts)
-				vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, opts)
-				vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, opts)
+				-- vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, opts)
+				-- vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, opts)
 			end,
 			flags = {
 				debounce_text_changes = 150,
@@ -56,7 +56,7 @@ return {
 
 				local opts = { noremap = true, silent = true, buffer = bufnr }
 				vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
-				vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, opts)
+				-- vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, opts)
 			end,
 		})
 	end,
