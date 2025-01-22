@@ -13,4 +13,4 @@ keymap.set("n", "<s-tab>", ":tabprev<Return>", opts)
 vim.opt.clipboard = "unnamedplus"
 
 -- Todo's
-keymap.set("n", "<leader>t", ":OpenTodos<Return>", opts)
+keymap.set("n", "<leader>t", ":OpenTodos<Return>GA", opts)
