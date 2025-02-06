@@ -1,27 +1,23 @@
 return {
-	-- Configuração principal do LSP
 	"neovim/nvim-lspconfig",
 	config = function()
 		local lspconfig = require("lspconfig")
+		local cmp_nvim_lsp = require("cmp_nvim_lsp")
+		local capabilities = cmp_nvim_lsp.default_capabilities()
 
-		-- Configurações de diagnóstico
 		vim.diagnostic.config({
-			virtual_text = {
-				prefix = "●",
-			},
+			virtual_text = { prefix = "●" },
 			signs = true,
 			underline = true,
 			update_in_insert = false,
 			severity_sort = true,
 		})
 
-		-- Definição de sinais de diagnóstico no gutter
 		vim.fn.sign_define("DiagnosticSignError", { text = "", texthl = "DiagnosticSignError" })
 		vim.fn.sign_define("DiagnosticSignWarn", { text = "", texthl = "DiagnosticSignWarn" })
 		vim.fn.sign_define("DiagnosticSignInfo", { text = "", texthl = "DiagnosticSignInfo" })
 		vim.fn.sign_define("DiagnosticSignHint", { text = "", texthl = "DiagnosticSignHint" })
 
-		-- Configurações adicionais para servidores LSP
 		local common_on_attach = function(client, bufnr)
 			local opts = { noremap = true, silent = true, buffer = bufnr }
 			vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
@@ -33,16 +29,14 @@ return {
 			vim.keymap.set("n", "<C-j>", vim.diagnostic.goto_next, opts)
 		end
 
-		-- Configuração do TSServer
 		lspconfig.tsserver.setup({
 			on_attach = function(client, bufnr)
 				client.server_capabilities.documentFormattingProvider = false
 				client.server_capabilities.documentRangeFormattingProvider = false
 				common_on_attach(client, bufnr)
 			end,
-			flags = {
-				debounce_text_changes = 150,
-			},
+			capabilities = capabilities,
+			flags = { debounce_text_changes = 150 },
 			root_dir = function(...)
 				return require("lspconfig.util").root_pattern(".git")(...)
 			end,
@@ -69,12 +63,9 @@ return {
 			},
 		})
 
-		-- Configuração do ESLint
 		lspconfig.eslint.setup({
 			on_attach = function(client, bufnr)
 				client.server_capabilities.documentFormattingProvider = true
-
-				-- Format on save
 				vim.api.nvim_create_autocmd("BufWritePre", {
 					buffer = bufnr,
 					callback = function()
@@ -85,29 +76,17 @@ return {
 			end,
 		})
 
-		-- Configuração do Lua LS
 		lspconfig.lua_ls.setup({
 			on_attach = common_on_attach,
+			capabilities = capabilities,
 			settings = {
 				Lua = {
-					workspace = {
-						checkThirdParty = false,
-					},
-					completion = {
-						workspaceWord = true,
-						callSnippet = "Both",
-					},
-					hint = {
-						enable = true,
-						setType = false,
-						paramType = true,
-					},
+					workspace = { checkThirdParty = false },
+					completion = { workspaceWord = true, callSnippet = "Both" },
+					hint = { enable = true, setType = false, paramType = true },
 					diagnostics = {
 						disable = { "incomplete-signature-doc", "trailing-space" },
-						groupSeverity = {
-							strong = "Warning",
-							strict = "Warning",
-						},
+						groupSeverity = { strong = "Warning", strict = "Warning" },
 						unusedLocalExclude = { "_*" },
 					},
 					format = {
@@ -122,14 +101,53 @@ return {
 			},
 		})
 
-		-- Configuração do YAML LS
 		lspconfig.yamlls.setup({
 			on_attach = common_on_attach,
+			capabilities = capabilities,
+			settings = { yaml = { keyOrdering = false } },
+		})
+
+		lspconfig.tailwindcss.setup({
+			on_attach = common_on_attach,
+			capabilities = capabilities,
+			filetypes = { "html", "css", "scss", "javascript", "javascriptreact", "typescriptreact", "vue", "svelte" },
 			settings = {
-				yaml = {
-					keyOrdering = false,
+				tailwindCSS = {
+					experimental = {
+						classRegex = {
+							"tw`([^`]*)",
+							'tw\\("([^"]*)',
+							"tw\\('([^']*)",
+						},
+					},
 				},
 			},
+		})
+
+		local util = require("lspconfig.util")
+		local function get_probe_dir(root_dir)
+			local node_modules = vim.fs.find("node_modules", { path = root_dir, upward = true })
+			if node_modules and #node_modules > 0 then
+				return vim.fs.dirname(node_modules[1]) .. "/node_modules"
+			end
+			return ""
+		end
+
+		lspconfig.angularls.setup({
+			on_attach = common_on_attach,
+			capabilities = capabilities,
+			cmd = {
+				"ngserver",
+				"--stdio",
+				"--tsProbeLocations",
+				get_probe_dir(vim.fn.getcwd()),
+				"--ngProbeLocations",
+				get_probe_dir(vim.fn.getcwd()),
+				"--includeCompletionsWithSnippetText",
+				"--includeAutomaticOptionalChainCompletions",
+			},
+			filetypes = { "html", "typescript", "typescriptreact", "typescript.tsx", "htmlangular" },
+			root_dir = util.root_pattern("angular.json", ".git"),
 		})
 	end,
 	dependencies = {
