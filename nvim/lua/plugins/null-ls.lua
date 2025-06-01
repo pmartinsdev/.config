@@ -5,11 +5,6 @@ return {
 		local null_ls = require("null-ls")
 
 		null_ls.setup({
-			sources = {
-				-- ESLint for diagnostics and code actions
-				null_ls.builtins.diagnostics.eslint_d,
-				null_ls.builtins.code_actions.eslint_d,
-			},
 			on_attach = function(client, bufnr)
 				-- Format on save
 				if client.supports_method("textDocument/formatting") then
