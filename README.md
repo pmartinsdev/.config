@@ -31,14 +31,23 @@ Enabled through LazyVim extras in `nvim/lazyvim.json`: TypeScript (vtsls), Tailw
 
 The plain shell terminal lives on `<leader>ft`.
 
-### Worktrees and live changes 🌳
-Agents work in their own git worktrees, so Neovim can jump between them and follow whatever is changing on disk.
+### Worktrees and sessions 🌳
+Agents work in their own git worktrees, and each worktree keeps its own Claude session and its own buffers inside Neovim.
+
+**Starting.** Running `nvim` with no file in a repository that has more than one worktree opens the worktree panel first. Each entry shows what is going on there: the Claude panel open in this Neovim, background agents still running (from `claude agents --json`, matched by the directory in their transcript), a session open in another terminal, the last conversation in that folder and the number of changed files. The preview lists the sessions and the changes. `Esc` stays where Neovim started.
+
+**Choosing a session.** The first time Claude opens in a worktree (`Ctrl+/`), Neovim offers to enter a running background agent there (`claude attach`), continue the last conversation (`--continue`), pick an older one (`--resume`) or start a new one. Switching worktrees keeps each Claude running, hides its panel and brings it back on return. Selections and mentions only reach the Claude of the current worktree.
+
+**New worktrees** go to `.claude/worktrees/<name>` on branch `claude/<name>`, from `origin/HEAD` (or `HEAD` without a remote), and open a new Claude conversation. If the repository does not ignore that folder, it is added to `.git/info/exclude`.
 
 | Key | Action |
 | --- | --- |
-| `<leader>gw` / `:Worktrees` | Switch to another worktree, reopening the same file there. `nvim +Worktrees` starts with the picker |
+| `<leader>gw` / `:Worktrees` | Worktree panel: enter, continue or create (`Ctrl+n`) |
+| `<leader>gW` | Back to the previous worktree |
 | `<leader>aw` | Turn following changes on or off |
 | `<leader>gs` / `<leader>gd` | Changed files / changed hunks in the current worktree |
+
+Buffers and windows of each worktree are saved with persistence.nvim when leaving it and restored when coming back.
 
 **Live follow.** Neovim watches the root of the worktree it is in. When any process (Claude in the panel, a background agent, a formatter) changes a file, the buffer reloads, the changed lines flash and the window jumps there, unless I'm typing. Git-ignored paths are skipped, batches of more than five files only raise a notice, and unsaved edits are never overwritten. The statusline shows the branch when inside a linked worktree.
 
