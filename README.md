@@ -26,13 +26,21 @@ Enabled through LazyVim extras in `nvim/lazyvim.json`: TypeScript (vtsls), Tailw
 | `<leader>as` (visual) | Send the selection to the chat and jump there |
 | `<leader>aq` | Ask about the selection, or the function under the cursor, without leaving the code |
 | `<leader>aa` / `<leader>ad` | Accept or reject a proposed diff |
-| `<leader>aw` | Turn following Claude's edits on or off |
 | `<leader>am` | Pick the model |
 | `Ctrl+q` / `Ctrl+h` / `q` | Inside the panel: normal mode, back to the code, hide |
 
-**Live follow.** Sessions opened from Neovim load `nvim/claude/settings.json`, whose `PostToolUse` hook tells Neovim (through `$NVIM`) which file Claude touched. The buffer reloads, the changed lines flash and the window jumps there, unless I'm typing. Outside Neovim the hook does nothing.
-
 The plain shell terminal lives on `<leader>ft`.
+
+### Worktrees and live changes 🌳
+Agents work in their own git worktrees, so Neovim can jump between them and follow whatever is changing on disk.
+
+| Key | Action |
+| --- | --- |
+| `<leader>gw` / `:Worktrees` | Switch to another worktree, reopening the same file there. `nvim +Worktrees` starts with the picker |
+| `<leader>aw` | Turn following changes on or off |
+| `<leader>gs` / `<leader>gd` | Changed files / changed hunks in the current worktree |
+
+**Live follow.** Neovim watches the root of the worktree it is in. When any process (Claude in the panel, a background agent, a formatter) changes a file, the buffer reloads, the changed lines flash and the window jumps there, unless I'm typing. Git-ignored paths are skipped, batches of more than five files only raise a notice, and unsaved edits are never overwritten. The statusline shows the branch when inside a linked worktree.
 
 ### Aesthetic Touch 🎨
 - **Theme**: Currently, I’m all about the **[Tokyo Night](https://github.com/folke/tokyonight.nvim)** theme. It’s visually stunning and perfect for long coding sessions.
