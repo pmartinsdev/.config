@@ -42,7 +42,8 @@ local function deliver(question, origin_win, delay_ms)
   local deadline = vim.uv.now() + connect_timeout_ms
 
   local function mentions_delivered()
-    return claudecode.is_claude_connected() and #(claudecode.state.mention_queue or {}) == 0
+    local mention_queue_empty = #(claudecode.state.mention_queue or {}) == 0
+    return require("workspace.claude_terminals").ready() and mention_queue_empty
   end
 
   local function send()
@@ -75,7 +76,8 @@ local function ask(first_row, last_row)
   end
 
   local claudecode = require("claudecode")
-  local delay_ms = claudecode.is_claude_connected() and delivery_delay_ms.connected or delivery_delay_ms.starting
+  local is_ready = require("workspace.claude_terminals").ready()
+  local delay_ms = is_ready and delivery_delay_ms.connected or delivery_delay_ms.starting
   if file ~= "" and vim.bo.buftype == "" then
     claudecode.send_at_mention(file, first_row, last_row, "ask")
   else

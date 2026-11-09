@@ -74,7 +74,8 @@ local function highlight(buf, ranges)
 end
 
 local function uncommitted_ranges(path)
-  local result = vim.system({ "git", "-C", M.root, "diff", "--no-color", "--unified=0", "HEAD", "--", path }, { text = true })
+  local result = vim
+    .system({ "git", "-C", M.root, "diff", "--no-color", "--unified=0", "HEAD", "--", path }, { text = true })
     :wait()
   local ranges = {}
   for removed, first, added in (result.stdout or ""):gmatch("@@ %-%d+,?(%d*) %+(%d+),?(%d*) @@") do
@@ -263,14 +264,6 @@ local function on_event(err, filename)
   debounce_timer:start(debounce_ms, 0, vim.schedule_wrap(flush))
 end
 
-local function project_root()
-  local result = vim.system({ "git", "rev-parse", "--show-toplevel" }, { cwd = vim.fn.getcwd(), text = true }):wait()
-  if result.code ~= 0 then
-    return nil
-  end
-  return real_path(vim.trim(result.stdout))
-end
-
 function M.unwatch()
   if watcher then
     watcher:stop()
@@ -282,7 +275,7 @@ function M.unwatch()
 end
 
 function M.watch()
-  local root = project_root()
+  local root = require("workspace.root").get()
   if root == M.root then
     return
   end
@@ -303,7 +296,6 @@ end
 
 function M.setup()
   local group = vim.api.nvim_create_augroup("workspace_follow", { clear = true })
-  vim.api.nvim_create_autocmd("DirChanged", { group = group, callback = M.watch })
   vim.api.nvim_create_autocmd("BufWritePost", {
     group = group,
     callback = function(event)

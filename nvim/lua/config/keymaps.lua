@@ -12,7 +12,11 @@ vim.keymap.set({ "n", "t" }, "<C-_>", toggle_claude, { desc = "which_key_ignore"
 
 vim.keymap.set("n", "<leader>gw", function()
   require("workspace.worktrees").pick()
-end, { desc = "Switch Worktree" })
+end, { desc = "Worktrees and Claude sessions" })
+
+vim.keymap.set("n", "<leader>gW", function()
+  require("workspace.worktrees").previous()
+end, { desc = "Previous Worktree" })
 
 vim.keymap.set("n", "<leader>aw", function()
   require("workspace.follow").toggle()

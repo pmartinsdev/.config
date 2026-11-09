@@ -1,15 +1,11 @@
-local claude_bin = vim.fn.exepath("claude")
-if claude_bin == "" then
-  claude_bin = vim.fn.expand("~/.local/bin/claude")
-end
-
 return {
   {
     "coder/claudecode.nvim",
     opts = {
-      terminal_cmd = claude_bin,
+      terminal_cmd = require("workspace.sessions").claude_bin(),
       focus_after_send = true,
       terminal = {
+        provider = require("workspace.claude_terminals"),
         split_side = "right",
         split_width_percentage = 0.38,
         snacks_win_opts = {
