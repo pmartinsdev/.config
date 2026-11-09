@@ -5,20 +5,34 @@ You've stumbled upon my treasure trove of personal configurations essential for 
 ## Neovim Setup 🛠️
 
 ### Dive into My Environment
-Prepare to elevate your coding experience with my meticulously curated Neovim setup. It’s crafted to boost productivity and enhance code clarity.
+Built on **[LazyVim](https://www.lazyvim.org/)**, with **[Claude Code](https://claude.com/claude-code)** wired in as a side panel that knows what I'm looking at.
 
 ### Prerequisites 📋
-- **Neovim (v0.9.0+)**: Ensure it’s compiled with **LuaJIT** for optimal performance. 🚀
-- **Git (v2.19.0+)**: Required for leveraging partial clones. 🔄
-- **[LazyVim](https://www.lazyvim.org/)**: My go-to for managing plugins and configurations seamlessly. 🧰
-- A **[Nerd Font](https://www.nerdfonts.com/)** (v3.0+): Optional but recommended for full icon support. 🎨
+- **Neovim (v0.12+)** compiled with **LuaJIT**. 🚀
+- **Git**, a **C compiler** and **Node.js** (Mason installs the language servers with npm). 🔄
+- **[ripgrep](https://github.com/BurntSushi/ripgrep)**, **[fd](https://github.com/sharkdp/fd)**, **[fzf](https://github.com/junegunn/fzf)**, **[lazygit](https://github.com/jesseduffield/lazygit)** and the **[tree-sitter CLI](https://github.com/tree-sitter/tree-sitter)**. 🔍
+- A **[Nerd Font](https://www.nerdfonts.com/)** set in the terminal (I use JetBrainsMono Nerd Font). 🎨
+- The **Claude Code CLI** on the `PATH` (falls back to `~/.local/bin/claude`). 🤖
 
-### Essential Plugins 🔌
-- **[nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter#requirements)**: Enhances syntax highlighting and requires a C compiler. 🌈
-- **[lazygit](https://github.com/jesseduffield/lazygit)**: Simplifies Git operations within Neovim. Optional but incredibly handy. 🌐
-- **[telescope.nvim](https://github.com/nvim-telescope/telescope.nvim)**: Powers my file searches and code navigation, utilizing:
-  - **[ripgrep](https://github.com/BurntSushi/ripgrep)** for dynamic grep capabilities, 🔍
-  - **[fd](https://github.com/sharkdp/fd)** for efficient file finding. 📁
+### Languages 🌈
+Enabled through LazyVim extras in `nvim/lazyvim.json`: TypeScript (vtsls), Tailwind, Prisma, SQL with dadbod, JSON, YAML, Markdown, Docker, TOML, Git, ESLint, Prettier, DAP and neotest with vitest. Toggle them with `:LazyExtras`.
+
+### Claude Code 🤖
+**[claudecode.nvim](https://github.com/coder/claudecode.nvim)** connects the CLI to the editor the same way the VS Code extension does: Claude sees the current file, cursor and selection, and proposes edits as diffs (`:w` accepts, `:q` rejects).
+
+| Key | Action |
+| --- | --- |
+| `Ctrl+/` | Show or hide Claude from anywhere, keeping the session |
+| `<leader>as` (visual) | Send the selection to the chat and jump there |
+| `<leader>aq` | Ask about the selection, or the function under the cursor, without leaving the code |
+| `<leader>aa` / `<leader>ad` | Accept or reject a proposed diff |
+| `<leader>aw` | Turn following Claude's edits on or off |
+| `<leader>am` | Pick the model |
+| `Ctrl+q` / `Ctrl+h` / `q` | Inside the panel: normal mode, back to the code, hide |
+
+**Live follow.** Sessions opened from Neovim load `nvim/claude/settings.json`, whose `PostToolUse` hook tells Neovim (through `$NVIM`) which file Claude touched. The buffer reloads, the changed lines flash and the window jumps there, unless I'm typing. Outside Neovim the hook does nothing.
+
+The plain shell terminal lives on `<leader>ft`.
 
 ### Aesthetic Touch 🎨
 - **Theme**: Currently, I’m all about the **[Tokyo Night](https://github.com/folke/tokyonight.nvim)** theme. It’s visually stunning and perfect for long coding sessions.
