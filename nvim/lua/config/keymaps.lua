@@ -9,3 +9,7 @@ end
 
 vim.keymap.set({ "n", "t" }, "<C-/>", toggle_claude, { desc = "Toggle Claude" })
 vim.keymap.set({ "n", "t" }, "<C-_>", toggle_claude, { desc = "which_key_ignore" })
+
+vim.keymap.set("n", "<leader>aw", function()
+  require("workspace.follow").toggle()
+end, { desc = "Toggle following worktree changes" })

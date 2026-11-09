@@ -2,13 +2,12 @@ local claude_bin = vim.fn.exepath("claude")
 if claude_bin == "" then
   claude_bin = vim.fn.expand("~/.local/bin/claude")
 end
-local nvim_settings = vim.fn.stdpath("config") .. "/claude/settings.json"
 
 return {
   {
     "coder/claudecode.nvim",
     opts = {
-      terminal_cmd = ("%s --settings %s"):format(claude_bin, vim.fn.shellescape(nvim_settings)),
+      terminal_cmd = claude_bin,
       focus_after_send = true,
       terminal = {
         split_side = "right",
@@ -46,13 +45,6 @@ return {
         end,
         mode = "x",
         desc = "Ask Claude about selection",
-      },
-      {
-        "<leader>aw",
-        function()
-          require("claude.follow").toggle()
-        end,
-        desc = "Toggle following Claude edits",
       },
       { "<leader>am", "<cmd>ClaudeCodeSelectModel<cr>", desc = "Select Claude model" },
       { "<leader>ax", "<cmd>ClaudeCodeCloseAllDiffs<cr>", desc = "Close all Claude diffs" },
